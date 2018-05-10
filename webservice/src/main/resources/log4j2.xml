@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+	<properties>
+		<property name="logDir">../logs/</property>
+		<property name="fn">gkjd.log</property>
+	</properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="[%p] %d [%t] [%c] - %m%n" />
+		</Console>
+
+		<RollingRandomAccessFile name="rraf" fileName="${logDir}${fn}"
+			filePattern="${logDir}/bk/$${date:yyyy-MM}/${fn}-%d{MM-dd-yyyy}-%i.log.gz"
+			immediateFlush="false">
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="1 GB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy max="31" />
+			<PatternLayout pattern="[%p] %d [%t] [%c{1.}] - %m%n" />
+		</RollingRandomAccessFile>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="org.apache.cxf.interceptor.LoggingInInterceptor"
+			level="INFO" additivity="false">
+			<AppenderRef ref="rraf" />
+		</Logger>
+		<Logger name="org.apache.cxf.interceptor.LoggingOutInterceptor"
+			level="INFO" additivity="false">
+			<AppenderRef ref="rraf" />
+		</Logger>
+
+		<AsyncRoot level="INFO">
+			<AppenderRef ref="rraf" />
+			<AppenderRef ref="Console" />
+		</AsyncRoot>
+	</Loggers>
+</configuration>

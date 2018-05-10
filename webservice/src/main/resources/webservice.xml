@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://cxf.apache.org/core 
+       http://cxf.apache.org/schemas/core.xsd
+       http://cxf.apache.org/jaxws 
+       http://cxf.apache.org/schemas/jaxws.xsd">
+	<!-- 从cxf.jar包中加载所有的cxf模块 -->
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<!-- 关口检定服务实现类 -->
+	<bean id="gkjdWebServiceImpl" class="com.frontier.mobile.gkjd.webservice.GkjdWebServiceImpl" />
+
+	<!-- 定义WebService端点 -->
+	<jaxws:endpoint id="gkjdWebService" implementor="#gkjdWebServiceImpl"
+		address="/gkjd" />
+
+	<!-- 定义日志拦截器 -->
+	<bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
+	<bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
+
+	<!-- 启用消息日志 -->
+	<cxf:bus>
+		<cxf:inInterceptors>
+			<ref bean="logInbound" />
+		</cxf:inInterceptors>
+		<cxf:outInterceptors>
+			<ref bean="logOutbound" />
+		</cxf:outInterceptors>
+		<cxf:outFaultInterceptors>
+			<ref bean="logOutbound" />
+		</cxf:outFaultInterceptors>
+		<cxf:inFaultInterceptors>
+			<ref bean="logInbound" />
+		</cxf:inFaultInterceptors>
+	</cxf:bus>
+</beans>
